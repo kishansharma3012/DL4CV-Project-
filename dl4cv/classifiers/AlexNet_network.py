@@ -16,7 +16,7 @@ class ClassificationNetwork(nn.Module):
         model_conv = models.alexnet(pretrained = True)
         for param in model_conv.parameters():
             param.requires_grad = False
-        
+        # testing
         self.Res_conv = nn.Sequential(
                         model_conv.conv1,
                         model_conv.bn1,
