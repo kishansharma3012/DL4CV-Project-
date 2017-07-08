@@ -7,7 +7,7 @@ import torch.utils.model_zoo as model_zoo
 class ClassificationNetwork(nn.Module):
 
     def __init__(self):
-        super(SegmentationNetwork, self).__init__()
+        super(ClassificationNetwork, self).__init__()
 
         ############################################################################
         #                             YOUR CODE
