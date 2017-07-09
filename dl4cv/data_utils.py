@@ -55,22 +55,28 @@ class ClassificationData(data.Dataset):
 
     def __init__(self, root, image_list):
         self.root = root
+        filename, ext = image_list.split('.')
+        self.foldername = filename + "_set"
+        self.transform = transforms.Compose([
+            transforms.CenterCrop(256),
+            transforms.Scale(240),
+            transforms.ToTensor(),
+        ])
 
         with open(os.path.join(self.root, image_list)) as f:
             self.image_names = f.read().splitlines()
 
     def __getitem__(self, index):
-        to_tensor = transforms.ToTensor()
-        img_id = self.image_names[index].replace('.jpg', '')
+        #img_id, ext = self.image_names[index].split('.')
+        img_id, ext = os.path.splitext(os.path.basename(self.image_names[index]))
 
         tgr, num = img_id.split('_')
 
-        img = Image.open(os.path.join(self.root, 'images', img_id + '.jpg')).convert('RGB')
-        center_crop = transforms.CenterCrop(240)
-        img = center_crop(img)
-        img = to_tensor(img)
+        img = Image.open(os.path.join(self.root, self.foldername, img_id + '.jpg')).convert('RGB')
 
-        target = tgr
+        img = self.transform(img)
+
+        target = int(tgr)
         name = diseases_list[target]["name"]
 
         target_labels = (target, name)
