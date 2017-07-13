@@ -79,7 +79,8 @@ class ClassificationData(data.Dataset):
         target = int(tgr)
         name = diseases_list[target]["name"]
 
-        target_labels = (target, name)
+        #target_labels = (target, name)
+        target_labels = target
 
         return img, target_labels
 

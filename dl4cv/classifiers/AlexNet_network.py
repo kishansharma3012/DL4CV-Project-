@@ -24,7 +24,8 @@ class ClassificationNetwork(nn.Module):
         #                )
 
         self.my_model = nn.Sequential(
-                        nn.Linear(1000, 38, bias=True),
+                        nn.Linear(1000, 512, bias=True),
+                        nn.Linear(512, 38, bias=True),
                         )
                         
         for param in self.my_model.parameters():

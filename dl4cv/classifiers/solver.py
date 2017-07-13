@@ -40,9 +40,11 @@ class Solver(object):
         - num_epochs: total number of training epochs
         - log_nth: log training accuracy and loss every nth iteration
         """
-        optim = self.optim(model.parameters(), **self.optim_args)
+        optim = self.optim(model.my_model.parameters(), **self.optim_args)
         self._reset_histories()
         iter_per_epoch = len(train_loader)
+        
+        use_gpu = torch.cuda.is_available()
 
         print 'START TRAIN.'
         ############################################################################
@@ -68,7 +70,13 @@ class Solver(object):
             for i, data in enumerate(train_loader, 0):
                 # get the inputs, wrap them in Variable
                 input, label = data
+                if use_gpu:
+                    input = input.cuda()
+                    label = label.cuda()
+                    model = model.cuda()
+                
                 inputs, labels = Variable(input), Variable(label)
+                
                 # zero the parameter gradients
                 optim.zero_grad()
 
@@ -98,6 +106,11 @@ class Solver(object):
             for i, data_val in enumerate(val_loader, 0):
                 # get the inputs, wrap them in Variable
                 input_val, label_val = data_val
+                
+                if use_gpu:
+                    input_val = input_val.cuda()
+                    label_val = label_val.cuda()
+                
                 inputs_val, labels_val = Variable(input_val), Variable(label_val)
                 output_val = model(inputs_val)
                 loss_val = self.loss_func(output_val, labels_val)
