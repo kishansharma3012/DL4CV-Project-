@@ -13,33 +13,15 @@ class ClassificationNetwork(nn.Module):
         #                             YOUR CODE
         #                      														#
         ############################################################################
-        model_conv = models.resnet18(pretrained = True)
-        for param in model_conv.parameters():
+        self.Res_conv = models.resnet18(pretrained = True)
+        for param in self.Res_conv.parameters():
             param.requires_grad = False
         
-        self.Res_conv = nn.Sequential(
-                        model_conv.conv1,
-                        model_conv.bn1,
-                        model_conv.relu,
-                        model_conv.maxpool,
-                        model_conv.layer1,
-                        model_conv.layer2,
-                        model_conv.layer3,
-                        model_conv.layer4,
-                        )
-
 
         self.my_model = nn.Sequential(
-                        nn.Conv2d(512,256,kernel_size=3, stride=1, padding=0),
-                        nn.ReLU(),
-                        nn.ConvTranspose2d(256,128,kernel_size=(5,5), stride=5, padding=(1,1), output_padding=(0,0)),
-                        nn.BatchNorm2d(128,eps = 1e-05,momentum = 0.1, affine =True),
-                        nn.ReLU(),
-                        nn.ConvTranspose2d(128,64,kernel_size=(3,3), stride=3, padding=(2,2), output_padding=(1,1)),
-                        nn.BatchNorm2d(64,eps = 1e-05,momentum = 0.1, affine =True),
-                        nn.ReLU(),
-                        nn.ConvTranspose2d(64,24,kernel_size=(3,3), stride=3, padding=(2,2), output_padding=(1,1))
-                        )    
+                        nn.Linear(1000, 512, bias=True),
+                        nn.Linear(512, 38, bias=True),
+                        )   
         for param in self.my_model.parameters():
             param.requires_grad = True
         
