@@ -4,14 +4,14 @@ import torch.nn.functional as F
 from torchvision import models
 import torch.utils.model_zoo as model_zoo
 
-class SegmentationNetwork(nn.Module):
+class ClassificationNetwork(nn.Module):
 
     def __init__(self):
-        super(SegmentationNetwork, self).__init__()
+        super(ClassificationNetwork, self).__init__()
 
         ############################################################################
         #                             YOUR CODE
-        #                      #
+        #                      														#
         ############################################################################
         model_conv = models.resnet18(pretrained = True)
         for param in model_conv.parameters():
