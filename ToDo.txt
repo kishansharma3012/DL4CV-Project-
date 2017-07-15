@@ -1,0 +1,1 @@
+https://drive.google.com/open?id=0ByW7i_yK927JVDdIOXQxcXpEdTQ - Evaluate this trained DenseNet model on your system, tell me obtained accuracy (it's a cPickled model file)
