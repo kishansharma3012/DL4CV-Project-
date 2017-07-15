@@ -17,6 +17,12 @@ class ClassificationNetwork(nn.Module):
         
         for param in self.alex_model.parameters():
             param.requires_grad = False
+
+        #for param in self.alex_model.features[8].parameters():
+        #    param.requires_grad = True
+
+        for param in self.alex_model.features[10].parameters():
+            param.requires_grad = True
         
         #self.alex_conv = nn.Sequential(
         #                alex_model.features,
@@ -24,8 +30,8 @@ class ClassificationNetwork(nn.Module):
         #                )
 
         self.my_model = nn.Sequential(
-                        nn.Linear(1000, 512, bias=True),
-                        nn.Linear(512, 38, bias=True),
+                        nn.Linear(1000, 400, bias=True),
+                        nn.Linear(400, 38, bias=True),
                         )
                         
         for param in self.my_model.parameters():
