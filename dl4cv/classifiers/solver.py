@@ -40,10 +40,10 @@ class Solver(object):
         - num_epochs: total number of training epochs
         - log_nth: log training accuracy and loss every nth iteration
         """
-        optim = self.optim(model.my_model.parameters(), **self.optim_args)
+        optim = self.optim(filter(lambda p: p.requires_grad, model.parameters()), **self.optim_args)
         self._reset_histories()
         iter_per_epoch = len(train_loader)
-        
+        # filter(lambda p: p.requires_grad, model.parameters())
         use_gpu = torch.cuda.is_available()
 
         print 'START TRAIN.'
@@ -67,6 +67,11 @@ class Solver(object):
         #   ...                                                                    #
         ############################################################################
         for epoch in range(num_epochs):
+            total_train  = 0
+            correct_train = 0
+            
+            #Training Loop
+            
             for i, data in enumerate(train_loader, 0):
                 # get the inputs, wrap them in Variable
                 input, label = data
@@ -85,6 +90,10 @@ class Solver(object):
                 loss = self.loss_func(outputs, labels)
                 loss.backward()
                 optim.step()
+                
+                _,predicted_train = torch.max(outputs.data, 1)
+                total_train += labels.size(0)
+                correct_train += (predicted_train == label).sum()
 
                 # Storing values
                 self.train_loss_history.append(loss.data[0])
@@ -93,13 +102,12 @@ class Solver(object):
                           (i, iter_per_epoch, self.train_loss_history[-1])
 
                 if (i+1) % iter_per_epoch == 0:
-                    _,predicted_train = torch.max(outputs.data, 1)
-                    total_train = labels.size(0)
-                    correct_train = (predicted_train == label).sum()
                     self.train_acc_history.append(correct_train/float(total_train))
                     print ('[Epoch %d/%d] Train acc/loss: %0.4f/%0.4f') % \
                           (epoch, num_epochs, self.train_acc_history[-1], self.train_loss_history[-1])
 
+            #Validation Loop
+            
             correct_val = 0
             val_size = 0
             loss_val = 0
