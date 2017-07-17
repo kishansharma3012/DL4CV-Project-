@@ -23,6 +23,9 @@ class ClassificationNetwork(nn.Module):
 
         for param in self.alex_model.features[10].parameters():
             param.requires_grad = True
+
+        for param in self.alex_model.features[8].parameters():
+            param.requires_grad = True
         
         #self.alex_conv = nn.Sequential(
         #                alex_model.features,
