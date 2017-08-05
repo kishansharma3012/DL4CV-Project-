@@ -26,6 +26,9 @@ class ClassificationNetwork(nn.Module):
 
         for param in self.alex_model.features[8].parameters():
             param.requires_grad = True
+
+        for param in self.alex_model.features[6].parameters():
+            param.requires_grad = True
         
         #self.alex_conv = nn.Sequential(
         #                alex_model.features,
@@ -55,6 +58,9 @@ class ClassificationNetwork(nn.Module):
         out = self.alex_model.forward(x)
         out = self.my_model(out)
         return out
+
+    def get_features_data(self, layer_num):
+        return self.alex_model.features[layer_num].weight.data.cpu().numpy()
 
     def save(self, path):
         """
