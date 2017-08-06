@@ -11,13 +11,20 @@ class Solver(object):
                          "eps": 1e-8,
                          "weight_decay": 0.0}
 
+    weights = torch.cuda.FloatTensor([0.0122442771, 0.0127766370, 0.0050193931, 0.0316373869, 0.0270743022, 0.0228914746, 0.0164271047, 0.0080614495, 0.0244885543,
+                                0.0165031561, 0.0204578295, 0.0222070119, 0.0244885543, 0.0185565442, 0.0083656552, 0.1076127462, 0.0444900753, 0.0046391361,
+                                0.0174157731, 0.0259335311, 0.0190889041, 0.01832839, 0.0031181078, 0.0112556088, 0.0870028139, 0.0330823637, 0.0186325956,
+                                0.0096585292, 0.0367328314, 0.018708647, 0.0341470834, 0.0184804928, 0.0342991862, 0.0334626207, 0.0247927599, 0.0922503612,
+                                0.0064643699, 0.0292037417])
+
     def __init__(self, optim=torch.optim.Adam, optim_args={},
                  loss_func=torch.nn.CrossEntropyLoss):
         optim_args_merged = self.default_adam_args.copy()
         optim_args_merged.update(optim_args)
         self.optim_args = optim_args_merged
         self.optim = optim
-        self.loss_func = loss_func()
+        self.loss_func = loss_func(weight=self.weights)
+        self.loss_func_val = loss_func()
 
         self._reset_histories()
 
@@ -148,7 +155,7 @@ class Solver(object):
                 
                 inputs_val, labels_val = Variable(input_val), Variable(label_val)
                 output_val = model(inputs_val)
-                loss_val = self.loss_func(output_val, labels_val)
+                loss_val = self.loss_func_val(output_val, labels_val)
                 _,predicted_val = torch.max(output_val.data, 1)
                 val_size += label_val.size(0)
                 correct_val += (predicted_val == label_val).sum()
