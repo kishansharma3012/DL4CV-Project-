@@ -9,35 +9,16 @@ class ClassificationNetwork(nn.Module):
     def __init__(self):
         super(ClassificationNetwork, self).__init__()
 
-        ############################################################################
-        #                             YOUR CODE
-        #                      														#
-        ############################################################################
-        self.Res_conv = models.resnet18(pretrained = True)
-        for param in self.Res_conv.parameters():
-            param.requires_grad = False
+        self.resnet18_model = models.resnet18(pretrained = True)
         
-
-        self.my_model = nn.Sequential(
-                        nn.Linear(1000, 512, bias=True),
-                        nn.Linear(512, 38, bias=True),
-                        )   
-        for param in self.my_model.parameters():
+        for param in self.resnet18_model.parameters():
             param.requires_grad = True
+	
+        self.resnet18_model.fc = nn.Linear(512, 38)
+     
         
     def forward(self, x):
-        """
-        Forward pass of the convolutional neural network. Should not be called
-        manually but by calling a model instance directly.
-
-        Inputs:
-        - x: PyTorch input Variable
-        """
-        ############################################################################
-        #                             YOUR CODE                                    #
-        ############################################################################
-        out = self.Res_conv(x)
-        out = self.my_model(out)
+        out = self.resnet18_model.forward(x)
         return out
 
     def save(self, path):
@@ -50,3 +31,4 @@ class ClassificationNetwork(nn.Module):
         """
         print 'Saving model... %s' % path
         torch.save(self, path)
+
